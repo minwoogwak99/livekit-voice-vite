@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { Room, RoomEvent, DisconnectReason } from "livekit-client";
 import { generateAccessToken, LIVEKIT_URL } from "../utils/tokenGenerator";
+import { useLocalParticipant } from "@livekit/components-react";
 
 interface RoomConnectionProps {
   room: Room;
@@ -21,6 +22,8 @@ export const RoomConnection = ({
   const [isConnected, setIsConnected] = useState(false);
   const [roomName, setRoomName] = useState("test-room");
   const [participantName, setParticipantName] = useState("");
+
+  const { localParticipant } = useLocalParticipant();
 
   // Generate a default participant name
   const generateParticipantName = () => {
@@ -46,6 +49,7 @@ export const RoomConnection = ({
       room.on(RoomEvent.Connected, () => {
         console.log("Connected to room:", roomName);
         setIsConnected(true);
+        localParticipant.setMicrophoneEnabled(true);
         onConnectionChange(true);
       });
 
