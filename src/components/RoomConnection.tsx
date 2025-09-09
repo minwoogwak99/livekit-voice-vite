@@ -27,7 +27,7 @@ export const RoomConnection = ({
 
   // Generate a default participant name
   const generateParticipantName = () => {
-    return `User-${Math.random().toString(36).substr(2, 9)}`;
+    return `User-${Math.random().toString(36).substring(2, 9)}`;
   };
 
   // Handle room connection
