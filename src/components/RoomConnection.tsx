@@ -3,6 +3,7 @@ import { Room, RoomEvent, DisconnectReason } from "livekit-client";
 import { generateAccessToken, LIVEKIT_URL } from "../utils/tokenGenerator";
 import { useLocalParticipant } from "@livekit/components-react";
 import { AgentDispatchClient } from "livekit-server-sdk";
+import { v4 as uuidv4 } from "uuid";
 
 interface RoomConnectionProps {
   room: Room;
@@ -21,8 +22,6 @@ export const RoomConnection = ({
 }: RoomConnectionProps) => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
-  const [roomName, setRoomName] = useState("test-room");
-  const [participantName, setParticipantName] = useState("");
 
   const { localParticipant } = useLocalParticipant();
   const agentDispatchClient = new AgentDispatchClient(
@@ -36,6 +35,9 @@ export const RoomConnection = ({
     return `User-${Math.random().toString(36).substring(2, 9)}`;
   };
 
+  const finalParticipantName = generateParticipantName();
+  const roomName = "Room-" + uuidv4().split("-")[0];
+
   // Handle room connection
   const connectToRoom = useCallback(async () => {
     if (!roomName.trim()) {
@@ -43,8 +45,6 @@ export const RoomConnection = ({
       return;
     }
 
-    const finalParticipantName =
-      participantName.trim() || generateParticipantName();
     setIsConnecting(true);
 
     try {
@@ -108,7 +108,7 @@ export const RoomConnection = ({
     } finally {
       setIsConnecting(false);
     }
-  }, [room, roomName, participantName, onConnectionChange, onError]);
+  }, [room, roomName, onConnectionChange, onError]);
 
   // Handle room disconnection
   const disconnectFromRoom = useCallback(async () => {
@@ -128,56 +128,14 @@ export const RoomConnection = ({
 
   return (
     <div className="w-full max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
-      <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-        LiveKit Audio Room
-      </h2>
-
       {!isConnected ? (
-        <div className="space-y-4">
-          <div>
-            <label
-              htmlFor="roomName"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Room Name
-            </label>
-            <input
-              id="roomName"
-              type="text"
-              value={roomName}
-              onChange={(e) => setRoomName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter room name"
-              disabled={isConnecting}
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="participantName"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Your Name (optional)
-            </label>
-            <input
-              id="participantName"
-              type="text"
-              value={participantName}
-              onChange={(e) => setParticipantName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your name"
-              disabled={isConnecting}
-            />
-          </div>
-
-          <button
-            onClick={connectToRoom}
-            disabled={isConnecting || !roomName.trim()}
-            className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-          >
-            {isConnecting ? "Connecting..." : "Join Room"}
-          </button>
-        </div>
+        <button
+          onClick={connectToRoom}
+          disabled={isConnecting || !roomName.trim()}
+          className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        >
+          {isConnecting ? "Connecting..." : "Join Room"}
+        </button>
       ) : (
         <div className="space-y-4 text-center">
           <div className="text-green-600 font-medium">
