@@ -8,6 +8,7 @@ import {
   useRoomContext,
   type ReceivedChatMessage,
 } from "@livekit/components-react";
+import { useTextToSpeech } from "../hooks/useTextToSpeech";
 
 /**
  * ChatTranscription component for displaying real-time speech transcriptions
@@ -22,6 +23,7 @@ export const ChatTranscription = () => {
 
   const transcriptions: TextStreamData[] = useTranscriptions();
   const chat = useChat();
+  const { speak } = useTextToSpeech();
 
   console.log("Transcriptions received:", transcriptions);
   console.log("Chat messages:", chat.chatMessages);
@@ -62,6 +64,27 @@ export const ChatTranscription = () => {
   useEffect(() => {
     scrollToBottom();
   }, [mergedMessages]);
+
+  // Ttts for completed transcription message
+  useEffect(() => {
+    if (mergedMessages.length > 0) {
+      const lastMessage = mergedMessages[mergedMessages.length - 1];
+
+      const isTranscription = transcriptions.some(
+        (t) => t.streamInfo.id === lastMessage.id
+      );
+
+      if (
+        isTranscription &&
+        lastMessage.from?.identity === room?.localParticipant.identity &&
+        lastMessage.message
+      ) {
+        setTimeout(() => {
+          speak(lastMessage.message);
+        }, 800);
+      }
+    }
+  }, [mergedMessages, transcriptions, speak, room?.localParticipant.identity]);
 
   const sendManualMessage = async () => {
     if (!manualMessage.trim() || !localParticipant) return;
