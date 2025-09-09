@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { Room, RoomEvent, DisconnectReason } from "livekit-client";
 import { generateAccessToken, LIVEKIT_URL } from "../utils/tokenGenerator";
 import { useLocalParticipant } from "@livekit/components-react";
+import { AgentDispatchClient } from "livekit-server-sdk";
 
 interface RoomConnectionProps {
   room: Room;
@@ -24,6 +25,11 @@ export const RoomConnection = ({
   const [participantName, setParticipantName] = useState("");
 
   const { localParticipant } = useLocalParticipant();
+  // const agentDispatchClient = new AgentDispatchClient(
+  //   import.meta.env.VITE_LIVEKIT_URL,
+  //   import.meta.env.VITE_LIVEKIT_API_KEY,
+  //   import.meta.env.VITE_LIVEKIT_API_SECRET
+  // );
 
   // Generate a default participant name
   const generateParticipantName = () => {
@@ -83,6 +89,14 @@ export const RoomConnection = ({
 
       // Connect to the LiveKit room
       await room.connect(LIVEKIT_URL, token);
+
+      // Dispatch agent ot the livekit room
+      // const dispatch = await agentDispatchClient.createDispatch(
+      //   roomName,
+      //   "test-agent-2" // testing //TODO: move to env variable - wrangler
+      // );
+
+      // console.log("DISPATCH CREATED::", dispatch);
     } catch (error) {
       console.error("Failed to connect to room:", error);
       onError(
