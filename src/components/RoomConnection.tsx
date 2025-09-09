@@ -87,17 +87,15 @@ export const RoomConnection = ({
         onError(""); // Clear error
       });
 
-      // Connect to the LiveKit room
-      await room.connect(LIVEKIT_URL, token);
-
       // Dispatch agent ot the livekit room
       const dispatch = await agentDispatchClient.createDispatch(
         roomName,
         "test-agent-2" // testing //TODO: move to env variable - wrangler
       );
-      console.log("aaaa", dispatch.state);
-
       console.log("DISPATCH CREATED::", dispatch);
+
+      // Connect to the LiveKit room
+      await room.connect(LIVEKIT_URL, token);
     } catch (error) {
       console.error("Failed to connect to room:", error);
       onError(
