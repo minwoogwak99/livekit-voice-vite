@@ -56,15 +56,6 @@ export const ChatTranscription = () => {
     return merged.sort((a, b) => a.timestamp - b.timestamp);
   }, [transcriptions, chat.chatMessages, room]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  // Auto-scroll when new messages arrive
-  useEffect(() => {
-    scrollToBottom();
-  }, [mergedMessages]);
-
   useEffect(() => {
     const lastMessage = mergedMessages[mergedMessages.length - 1];
 

@@ -1,5 +1,5 @@
 {
-  "name": "livekit-test",
+  "name": "livekit-voice",
   "compatibility_date": "2025-08-13",
   "compatibility_flags": ["nodejs_compat_v2"],
 
