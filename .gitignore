@@ -27,3 +27,4 @@ dist-ssr
 .cursor
 reference-codes
 .env
+.wrangler
