@@ -65,26 +65,15 @@ export const ChatTranscription = () => {
     scrollToBottom();
   }, [mergedMessages]);
 
-  // Ttts for completed transcription message
   useEffect(() => {
-    if (mergedMessages.length > 0) {
-      const lastMessage = mergedMessages[mergedMessages.length - 1];
+    const lastMessage = mergedMessages[mergedMessages.length - 1];
 
-      const isTranscription = transcriptions.some(
-        (t) => t.streamInfo.id === lastMessage.id
-      );
+    const timer = setTimeout(() => {
+      speak(lastMessage.message);
+    }, 1_500);
 
-      if (
-        isTranscription &&
-        lastMessage.from?.identity === room?.localParticipant.identity &&
-        lastMessage.message
-      ) {
-        setTimeout(() => {
-          speak(lastMessage.message);
-        }, 800);
-      }
-    }
-  }, [mergedMessages, transcriptions, speak, room?.localParticipant.identity]);
+    return () => clearTimeout(timer);
+  }, [mergedMessages]);
 
   const sendManualMessage = async () => {
     if (!manualMessage.trim() || !localParticipant) return;
