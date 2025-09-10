@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useEffect } from "react";
+import { useState, useRef, useMemo } from "react";
 import {
   useParticipants,
   useLocalParticipant,
@@ -8,7 +8,7 @@ import {
   useRoomContext,
   type ReceivedChatMessage,
 } from "@livekit/components-react";
-import { useTextToSpeech } from "../hooks/useTextToSpeech";
+// import { useTextToSpeech } from "../hooks/useTextToSpeech";
 
 /**
  * ChatTranscription component for displaying real-time speech transcriptions
@@ -23,7 +23,7 @@ export const ChatTranscription = () => {
 
   const transcriptions: TextStreamData[] = useTranscriptions();
   const chat = useChat();
-  const { speak } = useTextToSpeech();
+  // const { speak } = useTextToSpeech();
 
   console.log("Transcriptions received:", transcriptions);
   console.log("Chat messages:", chat.chatMessages);
@@ -56,15 +56,15 @@ export const ChatTranscription = () => {
     return merged.sort((a, b) => a.timestamp - b.timestamp);
   }, [transcriptions, chat.chatMessages, room]);
 
-  useEffect(() => {
-    const lastMessage = mergedMessages[mergedMessages.length - 1];
+  // useEffect(() => {
+  //   const lastMessage = mergedMessages[mergedMessages.length - 1];
 
-    const timer = setTimeout(() => {
-      speak(lastMessage.message);
-    }, 1_500);
+  //   const timer = setTimeout(() => {
+  //     speak(lastMessage.message);
+  //   }, 1_500);
 
-    return () => clearTimeout(timer);
-  }, [mergedMessages]);
+  //   return () => clearTimeout(timer);
+  // }, [mergedMessages]);
 
   const sendManualMessage = async () => {
     if (!manualMessage.trim() || !localParticipant) return;
